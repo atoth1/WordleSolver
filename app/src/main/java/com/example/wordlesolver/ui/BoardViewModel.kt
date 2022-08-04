@@ -4,11 +4,17 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.wordlesolver.network.WordsApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 const val NUM_ROWS = 6
 const val NUM_COLS = 5
-//
-private const val SUGGESTED_START_WORD = "ASDFG"
+
+// Basing this off this blog post:
+// https://medium.com/@tglaiel/the-mathematically-optimal-first-guess-in-wordle-cbcb03c19b0a
+private const val SUGGESTED_START_WORD = "RAISE"
 
 class BoardViewModel: ViewModel() {
 
@@ -37,6 +43,24 @@ class BoardViewModel: ViewModel() {
 
     private val _suggestedWord = MutableLiveData(SUGGESTED_START_WORD)
     val suggestedWord: LiveData<String> = _suggestedWord
+
+    private lateinit var allWords: MutableList<String>
+    private lateinit var remainingWords: MutableList<String>
+
+    init {
+        viewModelScope.launch {
+            try {
+                val response = WordsApi.retrofitService.getWords()
+                allWords = response.lines().toMutableList()
+                remainingWords = response.lines().toMutableList()
+                // Either a trailing new line character or null terminator gives extra empty string
+                allWords.removeLast()
+                remainingWords.removeLast()
+            } catch (e: Exception) {
+                // Ignoring this for now
+            }
+        }
+    }
 
     private var lastSubmissionMatched = false
 
@@ -90,6 +114,7 @@ class BoardViewModel: ViewModel() {
             }
         }
         _suggestedWord.value = SUGGESTED_START_WORD
+        remainingWords = allWords.toMutableList()
         lastSubmissionMatched = false
     }
 }
