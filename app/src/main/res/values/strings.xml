@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">WordleSolver</string>
+    <string name="app_name_spaced">Wordle Solver</string>
+    <string name="enter_details">Enter Letter Details</string>
+    <string name="begin_text">Placeholder</string>
+    <string name="submit_word">Submit Word</string>
+    <string name="reset">Reset</string>
+    <string name="miss_text">Not Present</string>
+    <string name="wrong_spot_text">Wrong Location</string>
+    <string name="hit_text">Correct Location</string>
+    <string name="letter_result">Letter Result</string>
+</resources>

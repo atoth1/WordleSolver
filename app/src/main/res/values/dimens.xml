@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="button_vertical_padding">8dp</dimen>
+    <dimen name="suggestion_top_padding">24dp</dimen>
+    <dimen name="button_size">72dp</dimen>
+</resources>

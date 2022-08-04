@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout>
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.wordlesolver.ui.BoardViewModel" />
+    </data>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/board_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/suggestion_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/suggestion_top_padding"
+                android:textSize="18sp"
+                android:text="@string/begin_text" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/board_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/submit_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/button_vertical_padding"
+                android:layout_marginEnd="8dp"
+                android:text="@string/submit_word" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/reset_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/button_vertical_padding"
+                android:layout_marginEnd="8dp"
+                android:text="@string/reset"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+</layout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout>
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.wordlesolver.ui.BoardViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/letter_fragment"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/radio_group">
+            <RadioButton android:id="@+id/miss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/miss_text" />
+            <RadioButton android:id="@+id/wrong_spot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wrong_spot_text" />
+            <RadioButton android:id="@+id/hit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hit_text" />
+        </RadioGroup>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/letter_grid" />
+
+    </LinearLayout>
+
+</layout>
+
