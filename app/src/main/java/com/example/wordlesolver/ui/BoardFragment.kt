@@ -3,7 +3,6 @@ package com.example.wordlesolver.ui
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.wordlesolver.R
 import com.example.wordlesolver.WordsApplication
 import com.example.wordlesolver.databinding.FragmentBoardBinding
-import com.example.wordlesolver.db.WordsDao
-import com.example.wordlesolver.db.WordsDatabaseInterface
-import com.example.wordlesolver.network.WordsApi
-import com.example.wordlesolver.repository.WordsRepositoryImpl
+import com.example.wordlesolver.dispatchers.DispatchersProvider
 import com.example.wordlesolver.ui.viewmodels.BoardViewModel
 import com.example.wordlesolver.ui.viewmodels.BoardViewModelFactory
 import com.example.wordlesolver.ui.viewmodels.NUM_COLS
@@ -31,11 +27,11 @@ class BoardFragment: Fragment() {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
-        val repository = WordsRepositoryImpl(
-            (activity.application as WordsApplication).database as WordsDatabaseInterface<WordsDao>,
-            WordsApi
+        BoardViewModelFactory(
+            (activity.application as WordsApplication).repository,
+            DispatchersProvider.ioDispatcher,
+            DispatchersProvider.defaultDispatcher
         )
-        BoardViewModelFactory(repository)
     }
 
     private var _binding: FragmentBoardBinding? = null

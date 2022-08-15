@@ -1,10 +1,7 @@
 package com.example.wordlesolver.ui.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.wordlesolver.repository.FakeApi
-import com.example.wordlesolver.repository.FakeDao
-import com.example.wordlesolver.repository.FakeDatabase
-import com.example.wordlesolver.repository.WordsRepositoryImpl
+import com.example.wordlesolver.repository.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -17,7 +14,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class BoardViewModelTest {
 
-    private lateinit var repository: WordsRepositoryImpl<FakeDao>
+    private lateinit var repository: WordsRepositoryInterface
     private lateinit var viewModel: BoardViewModel
 
     @get:Rule
@@ -29,7 +26,7 @@ class BoardViewModelTest {
         val fakeApi = FakeApi(responseString)
         val fakeDao = FakeDao(mutableListOf())
         val fakeDatabase = FakeDatabase(fakeDao)
-        repository = WordsRepositoryImpl(fakeDatabase, fakeApi)
+        repository = WordsRepository(fakeDatabase, fakeApi)
     }
 
     private suspend fun checkInitialState() {

@@ -1,9 +1,10 @@
 package com.example.wordlesolver
 
 import android.app.Application
-import com.example.wordlesolver.db.WordsDao
-import com.example.wordlesolver.db.WordsDatabase
+import com.example.wordlesolver.repository.WordsRepositoryInterface
+import com.example.wordlesolver.repository.WordsRepositoryProvider
 
 class WordsApplication : Application() {
-    val database: WordsDatabase by lazy { WordsDatabase.getInstance(this) }
+    val repository: WordsRepositoryInterface
+        get() = WordsRepositoryProvider.provideWordsRepository(this)
 }

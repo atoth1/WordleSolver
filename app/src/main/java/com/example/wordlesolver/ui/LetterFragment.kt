@@ -11,10 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.wordlesolver.WordsApplication
 import com.example.wordlesolver.databinding.FragmentLetterBinding
-import com.example.wordlesolver.db.WordsDao
-import com.example.wordlesolver.db.WordsDatabaseInterface
-import com.example.wordlesolver.network.WordsApi
-import com.example.wordlesolver.repository.WordsRepositoryImpl
+import com.example.wordlesolver.dispatchers.DispatchersProvider
 import com.example.wordlesolver.ui.viewmodels.BoardViewModel
 import com.example.wordlesolver.ui.viewmodels.BoardViewModelFactory
 
@@ -26,11 +23,11 @@ class LetterFragment: Fragment() {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
-        val repository = WordsRepositoryImpl(
-            (activity.application as WordsApplication).database as WordsDatabaseInterface<WordsDao>,
-            WordsApi
+        BoardViewModelFactory(
+            (activity.application as WordsApplication).repository,
+            DispatchersProvider.ioDispatcher,
+            DispatchersProvider.defaultDispatcher
         )
-        BoardViewModelFactory(repository)
     }
 
     private var _binding: FragmentLetterBinding? = null

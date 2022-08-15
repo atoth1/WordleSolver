@@ -1,22 +1,21 @@
 package com.example.wordlesolver.repository
 
 import com.example.wordlesolver.db.Word
-import com.example.wordlesolver.db.WordsDaoInterface
 import com.example.wordlesolver.db.WordsDatabaseInterface
 import com.example.wordlesolver.network.WordsApiInterface
 import kotlinx.coroutines.coroutineScope
 
-interface WordsRepository {
+interface WordsRepositoryInterface {
 
     suspend fun refreshWordList()
 
     suspend fun getWordList(): List<Word>
 }
 
-class WordsRepositoryImpl<DaoType: WordsDaoInterface>(
-    private val database: WordsDatabaseInterface<DaoType>,
+class WordsRepository(
+    private val database: WordsDatabaseInterface,
     private val networkApi: WordsApiInterface
-): WordsRepository {
+): WordsRepositoryInterface {
 
     override suspend fun refreshWordList() {
         val response = networkApi.getWords()

@@ -19,9 +19,9 @@ class FakeDao(private val words: MutableList<Word>): WordsDaoInterface {
     }
 }
 
-class FakeDatabase(private val wordsDao: FakeDao): WordsDatabaseInterface<FakeDao> {
+class FakeDatabase(private val wordsDao: FakeDao): WordsDatabaseInterface {
 
-    override fun getDao(): FakeDao {
+    override fun getDao(): WordsDaoInterface {
         return wordsDao
     }
 }
