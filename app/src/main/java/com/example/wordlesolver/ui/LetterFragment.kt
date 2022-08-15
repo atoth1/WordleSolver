@@ -9,15 +9,33 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.wordlesolver.WordsApplication
 import com.example.wordlesolver.databinding.FragmentLetterBinding
+import com.example.wordlesolver.db.WordsDao
+import com.example.wordlesolver.db.WordsDatabaseInterface
+import com.example.wordlesolver.network.WordsApi
+import com.example.wordlesolver.repository.WordsRepositoryImpl
+import com.example.wordlesolver.ui.viewmodels.BoardViewModel
+import com.example.wordlesolver.ui.viewmodels.BoardViewModelFactory
 
 const val POSITION = "position"
 
 class LetterFragment: Fragment() {
 
-    private val viewModel: BoardViewModel by activityViewModels()
+    private val viewModel: BoardViewModel by activityViewModels {
+        val activity = requireNotNull(this.activity) {
+            "You can only access the viewModel after onActivityCreated()"
+        }
+        val repository = WordsRepositoryImpl(
+            (activity.application as WordsApplication).database as WordsDatabaseInterface<WordsDao>,
+            WordsApi
+        )
+        BoardViewModelFactory(repository)
+    }
+
     private var _binding: FragmentLetterBinding? = null
     private val binding get() = _binding!!
+
     private var status = BoardViewModel.BoardEntryStatus.UNSET
     private var pos = -1
 

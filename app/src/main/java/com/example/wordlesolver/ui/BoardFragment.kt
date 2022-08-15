@@ -13,11 +13,30 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.wordlesolver.R
+import com.example.wordlesolver.WordsApplication
 import com.example.wordlesolver.databinding.FragmentBoardBinding
+import com.example.wordlesolver.db.WordsDao
+import com.example.wordlesolver.db.WordsDatabaseInterface
+import com.example.wordlesolver.network.WordsApi
+import com.example.wordlesolver.repository.WordsRepositoryImpl
+import com.example.wordlesolver.ui.viewmodels.BoardViewModel
+import com.example.wordlesolver.ui.viewmodels.BoardViewModelFactory
+import com.example.wordlesolver.ui.viewmodels.NUM_COLS
+import com.example.wordlesolver.ui.viewmodels.NUM_ROWS
 
 class BoardFragment: Fragment() {
 
-    private val viewModel: BoardViewModel by activityViewModels()
+    private val viewModel: BoardViewModel by activityViewModels {
+        val activity = requireNotNull(this.activity) {
+            "You can only access the viewModel after onActivityCreated()"
+        }
+        val repository = WordsRepositoryImpl(
+            (activity.application as WordsApplication).database as WordsDatabaseInterface<WordsDao>,
+            WordsApi
+        )
+        BoardViewModelFactory(repository)
+    }
+
     private var _binding: FragmentBoardBinding? = null
     private val binding get() = _binding!!
 
@@ -26,7 +45,6 @@ class BoardFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentBoardBinding.inflate(inflater, container, false)
-        binding.viewModel = viewModel
         return binding.root
     }
 
@@ -34,6 +52,7 @@ class BoardFragment: Fragment() {
         val adapter = BoardItemAdapter(::registerButtonObservers, NUM_ROWS, NUM_COLS)
         binding.boardGrid.adapter = adapter
         binding.boardGrid.layoutManager = GridLayoutManager(requireContext(), NUM_COLS)
+
 
         viewModel.suggestedWord.observe(viewLifecycleOwner) {
             binding.suggestionText.text = if (viewModel.gameCompleted()) {
@@ -43,15 +62,23 @@ class BoardFragment: Fragment() {
             }
         }
 
+        viewModel.remainingCandidates.observe(viewLifecycleOwner) {
+            if (!it) {
+                Toast.makeText(requireContext(), "Someone screwed up", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
         binding.submitButton.setOnClickListener {
-            if (viewModel.canSubmit()) {
+            val submitStatus = viewModel.canSubmit()
+            if (submitStatus == BoardViewModel.WordStatus.VALID_WORD) {
+                viewModel.submit()
                 Toast.makeText(requireContext(), "Word submitted", Toast.LENGTH_SHORT)
                     .show()
-                viewModel.submit()
-                if (viewModel.activeRow.value == NUM_ROWS) {
-                    binding.submitButton.isEnabled = false
-                    binding.resetButton.visibility = View.VISIBLE
-                }
+            } else if (submitStatus == BoardViewModel.WordStatus.INVALID_WORD) {
+                Toast.makeText(
+                    requireContext(), "Not a valid word, you joker ;)", Toast.LENGTH_SHORT
+                ).show()
             } else {
                 Toast.makeText(requireContext(), "Complete word not entered", Toast.LENGTH_SHORT)
                     .show()
@@ -60,8 +87,10 @@ class BoardFragment: Fragment() {
 
         binding.resetButton.setOnClickListener {
             viewModel.reset()
-            binding.submitButton.isEnabled = true
-            binding.resetButton.visibility = View.GONE
+        }
+
+        viewModel.activeRow.observe(viewLifecycleOwner) {
+            binding.submitButton.isEnabled = it < NUM_ROWS
         }
     }
 

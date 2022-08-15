@@ -5,4 +5,5 @@
     android:layout_height="@dimen/button_size"
     android:id="@+id/board_item"
     android:textSize="24sp"
+    android:textColor="@color/white"
     android:layout_marginTop="@dimen/button_vertical_padding" />

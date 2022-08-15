@@ -3,9 +3,7 @@
 <layout>
 
     <data>
-        <variable
-            name="viewModel"
-            type="com.example.wordlesolver.ui.BoardViewModel" />
+
     </data>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -44,8 +42,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="@dimen/button_vertical_padding"
                 android:layout_marginEnd="8dp"
-                android:text="@string/reset"
-                android:visibility="gone" />
+                android:text="@string/reset" />
 
         </LinearLayout>
 
