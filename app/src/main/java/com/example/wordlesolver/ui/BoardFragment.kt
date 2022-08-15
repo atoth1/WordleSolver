@@ -3,6 +3,7 @@ package com.example.wordlesolver.ui
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,7 +78,7 @@ class BoardFragment: Fragment() {
                     .show()
             } else if (submitStatus == BoardViewModel.WordStatus.INVALID_WORD) {
                 Toast.makeText(
-                    requireContext(), "Not a valid word, you joker ;)", Toast.LENGTH_SHORT
+                    requireContext(), "Not a valid word, you joker!!!", Toast.LENGTH_SHORT
                 ).show()
             } else {
                 Toast.makeText(requireContext(), "Complete word not entered", Toast.LENGTH_SHORT)
@@ -91,6 +92,33 @@ class BoardFragment: Fragment() {
 
         viewModel.activeRow.observe(viewLifecycleOwner) {
             binding.submitButton.isEnabled = it < NUM_ROWS
+        }
+
+        viewModel.loadStatus.observe(viewLifecycleOwner) { status ->
+            binding.apply {
+                when (status) {
+                    BoardViewModel.LoadStatus.DONE -> {
+                        statusIcon.visibility = View.GONE
+                    }
+                    BoardViewModel.LoadStatus.LOADING -> {
+                        statusIcon.visibility = View.VISIBLE
+                        statusIcon.setImageResource(R.drawable.ic_loading_animation)
+                    }
+                    BoardViewModel.LoadStatus.ERROR -> {
+                        statusIcon.visibility = View.VISIBLE
+                        statusIcon.setImageResource(R.drawable.ic_connection_error)
+                        submitButton.isEnabled = false
+                        resetButton.isEnabled = false
+                        suggestionText.text = null
+                        connectionErrorText.text = getString(R.string.no_connection)
+                        Toast.makeText(requireContext(), "Failed to download word list", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    else -> {
+                        // Nothing to do, just supressing possibly null warning
+                    }
+                }
+            }
         }
     }
 

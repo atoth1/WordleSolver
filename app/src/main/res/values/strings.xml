@@ -9,4 +9,5 @@
     <string name="wrong_spot_text">Wrong Location</string>
     <string name="hit_text">Correct Location</string>
     <string name="letter_result">Letter Result</string>
+    <string name="no_connection">No Connection</string>
 </resources>

@@ -49,12 +49,20 @@ class BoardViewModel(
     private val _suggestedWord = MutableLiveData(SUGGESTED_START_WORD)
     val suggestedWord: LiveData<String> = _suggestedWord
 
+    enum class LoadStatus {
+        LOADING, ERROR, DONE
+    }
+
+    private val _loadStatus = MutableLiveData(LoadStatus.DONE)
+    val loadStatus: LiveData<LoadStatus> = _loadStatus
+
     private var allWords = emptyList<Word>()
     private var remainingWords: MutableList<Word> = mutableListOf()
     private var lookupSet = emptySet<String>()
 
     init {
         viewModelScope.launch(ioDispatcher) {
+            _loadStatus.postValue(LoadStatus.LOADING)
             try {
                 repository.refreshWordList()
             } catch (e: Exception) {
@@ -67,6 +75,11 @@ class BoardViewModel(
                 lookupSet = allWords.map { word -> word.word }.toSet()
             } catch (e: Exception) {
 
+            }
+            if (allWords.isEmpty()) {
+                _loadStatus.postValue(LoadStatus.ERROR)
+            } else {
+                _loadStatus.postValue(LoadStatus.DONE)
             }
         }
     }
@@ -147,8 +160,10 @@ class BoardViewModel(
         if (gameCompleted())  _suggestedWord.value = ""
         else {
             viewModelScope.launch(defaultDispatcher) {
+                _loadStatus.postValue(LoadStatus.LOADING)
                 remainingWords = PatternMatcher(acceptedWord, acceptedPattern)
                     .getValidCandidates(remainingWords)
+                _loadStatus.postValue(LoadStatus.DONE)
 
                 if (remainingWords.isEmpty()) {
                     // Whoops, conflicting info or solution missing from
