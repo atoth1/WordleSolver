@@ -24,9 +24,7 @@ import com.example.wordlesolver.ui.viewmodels.NUM_ROWS
 class BoardFragment: Fragment() {
 
     private val viewModel: BoardViewModel by activityViewModels {
-        val activity = requireNotNull(this.activity) {
-            "You can only access the viewModel after onActivityCreated()"
-        }
+        val activity = requireNotNull(this.activity) { R.string.null_activity_error }
         BoardViewModelFactory(
             (activity.application as WordsApplication).repository,
             DispatchersProvider.ioDispatcher,
@@ -50,35 +48,32 @@ class BoardFragment: Fragment() {
         binding.boardGrid.adapter = adapter
         binding.boardGrid.layoutManager = GridLayoutManager(requireContext(), NUM_COLS)
 
-
         viewModel.suggestedWord.observe(viewLifecycleOwner) {
             binding.suggestionText.text = if (viewModel.gameCompleted()) {
-                "Game completed"
+                getString(R.string.game_completed)
             } else {
-                "Suggestted word is: $it"
+                getString(R.string.suggestion, it)
             }
         }
 
         viewModel.remainingCandidates.observe(viewLifecycleOwner) {
             if (!it) {
-                Toast.makeText(requireContext(), "Someone screwed up", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), R.string.no_candidates, Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.submitButton.setOnClickListener {
-            val submitStatus = viewModel.canSubmit()
-            if (submitStatus == BoardViewModel.WordStatus.VALID_WORD) {
-                viewModel.submit()
-                Toast.makeText(requireContext(), "Word submitted", Toast.LENGTH_SHORT)
-                    .show()
-            } else if (submitStatus == BoardViewModel.WordStatus.INVALID_WORD) {
-                Toast.makeText(
-                    requireContext(), "Not a valid word, you joker!!!", Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                Toast.makeText(requireContext(), "Complete word not entered", Toast.LENGTH_SHORT)
-                    .show()
+            when (viewModel.canSubmit()) {
+                BoardViewModel.WordStatus.VALID_WORD -> {
+                    viewModel.submit()
+                    Toast.makeText(requireContext(), R.string.word_submitted, Toast.LENGTH_SHORT).show()
+                }
+                BoardViewModel.WordStatus.INVALID_WORD -> {
+                    Toast.makeText(requireContext(), R.string.invalid_word, Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(requireContext(), R.string.incomplete_word, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -107,7 +102,7 @@ class BoardFragment: Fragment() {
                         resetButton.isEnabled = false
                         suggestionText.text = null
                         connectionErrorText.text = getString(R.string.no_connection)
-                        Toast.makeText(requireContext(), "Failed to download word list", Toast.LENGTH_LONG)
+                        Toast.makeText(requireContext(), R.string.no_connection_toast, Toast.LENGTH_LONG)
                             .show()
                     }
                     else -> {

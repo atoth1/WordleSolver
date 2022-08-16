@@ -10,4 +10,13 @@
     <string name="hit_text">Correct Location</string>
     <string name="letter_result">Letter Result</string>
     <string name="no_connection">No Connection</string>
+    <string name="no_connection_toast">Failed to download word list</string>
+    <string name="game_completed">Game completed</string>
+    <string name="suggestion">Suggested word is: %1$s</string>
+    <string name="no_candidates">Someone screwed up</string>
+    <string name="word_submitted">Word submitted</string>
+    <string name="invalid_word">Not a valid word, you joker!!!</string>
+    <string name="incomplete_word">Complete word not entered</string>
+    <string name="unset_result">Please set the result for this letter</string>
+    <string name="null_activity_error">You can only access the viewModel after onActivityCreated()</string>
 </resources>

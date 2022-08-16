@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.wordlesolver.R
 import com.example.wordlesolver.WordsApplication
 import com.example.wordlesolver.databinding.FragmentLetterBinding
 import com.example.wordlesolver.dispatchers.DispatchersProvider
@@ -20,9 +21,7 @@ const val POSITION = "position"
 class LetterFragment: Fragment() {
 
     private val viewModel: BoardViewModel by activityViewModels {
-        val activity = requireNotNull(this.activity) {
-            "You can only access the viewModel after onActivityCreated()"
-        }
+        val activity = requireNotNull(this.activity) { getString(R.string.null_activity_error) }
         BoardViewModelFactory(
             (activity.application as WordsApplication).repository,
             DispatchersProvider.ioDispatcher,
@@ -64,11 +63,7 @@ class LetterFragment: Fragment() {
         }
         val adapter = LetterItemAdapter {
             if (status == BoardViewModel.BoardEntryStatus.UNSET) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please set the result for this letter",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), R.string.unset_result, Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.setBoardEntry(pos, BoardViewModel.BoardEntry(it, status))
                 findNavController().navigateUp()
