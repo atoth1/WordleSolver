@@ -2,9 +2,8 @@ package com.example.wordlesolver.ui.viewmodels
 
 import androidx.lifecycle.*
 import com.example.wordlesolver.db.Word
+import com.example.wordlesolver.dispatchers.DispatchersInterface
 import com.example.wordlesolver.repository.WordsRepositoryInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 const val NUM_ROWS = 6
@@ -17,9 +16,11 @@ private const val SUGGESTED_START_WORD = "raise"
 
 class BoardViewModel(
     private val repository: WordsRepositoryInterface,
-    private val ioDispatcher: CoroutineDispatcher,
-    private val defaultDispatcher: CoroutineDispatcher
+    dispatchers: DispatchersInterface
 ): ViewModel() {
+
+    private val ioDispatcher = dispatchers.ioDispatcher
+    private val defaultDispatcher = dispatchers.defaultDispatcher
 
     private val _activeRow = MutableLiveData(0)
     val activeRow: LiveData<Int> = _activeRow
@@ -196,13 +197,12 @@ class BoardViewModel(
 
 class BoardViewModelFactory(
     private val repository: WordsRepositoryInterface,
-    private val ioDispatcher: CoroutineDispatcher,
-    private val defaultDispatcher: CoroutineDispatcher
+    private val dispatchers: DispatchersInterface
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(BoardViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return BoardViewModel(repository, ioDispatcher, defaultDispatcher) as T
+            return BoardViewModel(repository, dispatchers) as T
         }
         throw IllegalArgumentException("Unable to construct viewmodel")
     }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -23,12 +24,12 @@ import com.example.wordlesolver.ui.viewmodels.NUM_ROWS
 
 class BoardFragment: Fragment() {
 
-    private val viewModel: BoardViewModel by activityViewModels {
+    @VisibleForTesting
+    val viewModel: BoardViewModel by activityViewModels {
         val activity = requireNotNull(this.activity) { R.string.null_activity_error }
         BoardViewModelFactory(
             (activity.application as WordsApplication).repository,
-            DispatchersProvider.ioDispatcher,
-            DispatchersProvider.defaultDispatcher
+            DispatchersProvider.dispatchers
         )
     }
 

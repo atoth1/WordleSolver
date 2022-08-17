@@ -3,12 +3,15 @@
 buildscript {
     ext {
         appcompat_version = "1.4.2"
-        archTestingVersion = '2.1.0'
+        archTesting_version = "2.1.0"
         constraintlayout_version = "2.1.4"
         core_ktx_version = "1.7.0"
-        coroutines_version = "1.6.4"
+        coroutines_version = "1.6.0"
+        espresso_version = "3.4.0"
+        fragment_version = "1.5.2"
         kotlin_version = "1.7.10"
         material_version = "1.6.1"
+        mockito_version = "4.3.1"
         nav_version = "2.5.1"
         retrofit_version="2.9.0"
         room_version="2.4.3"

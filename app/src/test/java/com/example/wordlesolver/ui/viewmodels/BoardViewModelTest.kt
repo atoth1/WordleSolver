@@ -1,9 +1,9 @@
 package com.example.wordlesolver.ui.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.wordlesolver.dispatchers.TestDispatchers
 import com.example.wordlesolver.repository.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
@@ -20,6 +20,8 @@ class BoardViewModelTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
+    private val dispatchers = TestDispatchers()
+
     @Before
     fun setupViewModel() {
         val responseString = "aaaaa\nbbbbb\nccccc\nddddd\neeeee\nfffff\n"
@@ -27,6 +29,7 @@ class BoardViewModelTest {
         val fakeDao = FakeDao(mutableListOf())
         val fakeDatabase = FakeDatabase(fakeDao)
         repository = WordsRepository(fakeDatabase, fakeApi)
+        viewModel = BoardViewModel(repository, dispatchers)
     }
 
     private suspend fun checkInitialState() {
@@ -44,22 +47,14 @@ class BoardViewModelTest {
     }
 
     @Test
-    fun boardViewModelTest_initialState() = runTest {
-        // Would like to do this in the Before block, but testScheduler
-        // and advanceUntilIdle aren't available until here
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        viewModel = BoardViewModel(repository, dispatcher, dispatcher)
+    fun boardViewModelTest_initialState() = runTest(dispatchers.testDispatcher.scheduler) {
         advanceUntilIdle()
-
         checkInitialState()
     }
 
     @Test
-    fun boardViewModelTest_submitIncorrectValidWord() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        viewModel = BoardViewModel(repository, dispatcher, dispatcher)
+    fun boardViewModelTest_submitIncorrectValidWord() = runTest(dispatchers.testDispatcher.scheduler) {
         advanceUntilIdle()
-
         val entry = BoardViewModel.BoardEntry('a', BoardViewModel.BoardEntryStatus.MISS)
         for (col in 0 until NUM_COLS) {
             viewModel.setBoardEntry(col, entry)
@@ -74,11 +69,8 @@ class BoardViewModelTest {
     }
 
     @Test
-    fun boardViewModelTest_submitCorrectWord() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        viewModel = BoardViewModel(repository, dispatcher, dispatcher)
+    fun boardViewModelTest_submitCorrectWord() = runTest(dispatchers.testDispatcher.scheduler) {
         advanceUntilIdle()
-
         val entry = BoardViewModel.BoardEntry('a', BoardViewModel.BoardEntryStatus.HIT)
         for (col in 0 until NUM_COLS) {
             viewModel.setBoardEntry(col, entry)
@@ -94,11 +86,8 @@ class BoardViewModelTest {
     }
 
     @Test
-    fun boardViewModelTest_attemptSubmitInvalidWord() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        viewModel = BoardViewModel(repository, dispatcher, dispatcher)
+    fun boardViewModelTest_attemptSubmitInvalidWord() = runTest(dispatchers.testDispatcher.scheduler) {
         advanceUntilIdle()
-
         val entry = BoardViewModel.BoardEntry('g', BoardViewModel.BoardEntryStatus.MISS)
         for (col in 0 until NUM_COLS) {
             viewModel.setBoardEntry(col, entry)
@@ -109,11 +98,8 @@ class BoardViewModelTest {
     }
 
     @Test
-    fun boardViewModelTest_attemptSubmitIncompleteWord() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        viewModel = BoardViewModel(repository, dispatcher, dispatcher)
+    fun boardViewModelTest_attemptSubmitIncompleteWord() = runTest(dispatchers.testDispatcher.scheduler) {
         advanceUntilIdle()
-
         val entry = BoardViewModel.BoardEntry('a', BoardViewModel.BoardEntryStatus.MISS)
         for (col in 0 until NUM_COLS - 1) {
             viewModel.setBoardEntry(col, entry)
@@ -124,11 +110,8 @@ class BoardViewModelTest {
     }
 
     @Test
-    fun boardViewModelTest_submitConflictingInformation() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        viewModel = BoardViewModel(repository, dispatcher, dispatcher)
+    fun boardViewModelTest_submitConflictingInformation() = runTest(dispatchers.testDispatcher.scheduler) {
         advanceUntilIdle()
-
         var entry = BoardViewModel.BoardEntry('a', BoardViewModel.BoardEntryStatus.MISS)
         for (col in 0 until NUM_COLS) {
             viewModel.setBoardEntry(col, entry)
@@ -157,11 +140,8 @@ class BoardViewModelTest {
     }
 
     @Test
-    fun boardViewModelTest_reset() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        viewModel = BoardViewModel(repository, dispatcher, dispatcher)
+    fun boardViewModelTest_reset() = runTest(dispatchers.testDispatcher.scheduler) {
         advanceUntilIdle()
-
         val entry = BoardViewModel.BoardEntry('a', BoardViewModel.BoardEntryStatus.HIT)
         for (col in 0 until NUM_COLS) {
             viewModel.setBoardEntry(col, entry)

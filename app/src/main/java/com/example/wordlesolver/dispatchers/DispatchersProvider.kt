@@ -1,17 +1,34 @@
 package com.example.wordlesolver.dispatchers
 
-import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
+interface DispatchersInterface {
+
+    val mainDispatcher: CoroutineDispatcher
+
+    val ioDispatcher: CoroutineDispatcher
+
+    val defaultDispatcher: CoroutineDispatcher
+}
+
+class DefaultDispatchers: DispatchersInterface {
+
+    override val mainDispatcher
+        get() = Dispatchers.Main
+
+    override val ioDispatcher: CoroutineDispatcher
+        get() = Dispatchers.IO
+
+    override val defaultDispatcher: CoroutineDispatcher
+        get() = Dispatchers.Default
+}
+
 object DispatchersProvider {
 
-    var mainDispatcher: CoroutineDispatcher = Dispatchers.Main
-        @VisibleForTesting set
+    var dispatchers: DispatchersInterface = DefaultDispatchers()
 
-    var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-        @VisibleForTesting set
-
-    var defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
-        @VisibleForTesting set
+    fun resetToDefault() {
+        dispatchers = DefaultDispatchers()
+    }
 }
