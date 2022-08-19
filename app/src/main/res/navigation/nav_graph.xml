@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/boardFragment"
-        android:name="com.example.wordlesolver.ui.BoardFragment"
+        android:name="com.atoth1.wordlesolver.ui.BoardFragment"
         android:label="@string/app_name_spaced" >
         <action
             android:id="@+id/action_boardFragment_to_letterFragment"
@@ -14,7 +14,7 @@
     </fragment>
     <fragment
         android:id="@+id/letterFragment"
-        android:name="com.example.wordlesolver.ui.LetterFragment"
+        android:name="com.atoth1.wordlesolver.ui.LetterFragment"
         android:label="@string/enter_details" >
         <argument
             android:name="position"
